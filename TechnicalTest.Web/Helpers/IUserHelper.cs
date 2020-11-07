@@ -14,8 +14,6 @@ namespace TechnicalTest.Web.Helpers
 
         Task AddUserToRoleAsync(User user, string roleName);
 
-        Task<bool> IsUserInRoleAsync(User user, string roleName);
-
         Task<SignInResult> ValidatePasswordAsync(User user, string password);
     }
 }

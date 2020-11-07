@@ -11,15 +11,18 @@ namespace TechnicalTest.Web.Helpers
         private readonly DataContext _dataContext;
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly SignInManager<User> _signInManager;
 
         public UserHelper(
             DataContext dataContext,
             UserManager<User> userManager, 
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager, 
+            SignInManager<User> signInManager)
         {
             _dataContext = dataContext;
             _userManager = userManager;
             _roleManager = roleManager;
+            _signInManager = signInManager;
         }
 
         public async Task<IdentityResult> AddUserAsync(User user, string password)
@@ -49,15 +52,10 @@ namespace TechnicalTest.Web.Helpers
             return await _dataContext.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
 
-        public async Task<bool> IsUserInRoleAsync(User user, string roleName)
+        public async Task<SignInResult> ValidatePasswordAsync(User user, string password)
         {
-            return await _userManager.IsInRoleAsync(user, roleName);
+            return await _signInManager.CheckPasswordSignInAsync(user, password, false);
         }
 
-
-        public Task<SignInResult> ValidatePasswordAsync(User user, string password)
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }
