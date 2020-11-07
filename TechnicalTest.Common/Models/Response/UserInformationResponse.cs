@@ -8,8 +8,9 @@ namespace TechnicalTest.Common.Models
     {
         public string Usuario { get; set; }
         public string Contraseña { get; set; }
-        public string Estado { get; set; }
+        public bool Estado { get; set; }
         public string NombreUsuario { get; set; }
-        public string FechaCreacion { get; set; }
+        public DateTime FechaCreacion { get; set; }
+        public string EstadoActual => Estado ? "Activo" : "Inactivo";
     }
 }

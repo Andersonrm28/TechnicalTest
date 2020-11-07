@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using TechnicalTest.Common.Models;
 using TechnicalTest.Common.Models.Request;
 using TechnicalTest.Common.Models.Response;
@@ -15,6 +15,7 @@ namespace TechnicalTest.Web.Controllers.API
 {
     [ApiController]
     [Route("api/[Controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class UsuarioController : ControllerBase
     {
         private readonly DataContext _dataContext;
@@ -35,7 +36,7 @@ namespace TechnicalTest.Web.Controllers.API
             {
                 return BadRequest(new Response<object>
                 {
-                    RealizadoCorrectamente  = validations.RealizadoCorrectamente,
+                    RealizadoCorrectamente = validations.RealizadoCorrectamente,
                     Mensaje = validations.Mensaje
                 });
             }
@@ -57,7 +58,7 @@ namespace TechnicalTest.Web.Controllers.API
                 Contraseña = request.Contrasena,
                 Estado = request.Estado,
                 NombreUsuario = request.NombreUsuario,
-                FechaCreacion = DateTime.Now
+                FechaCreacion = request.FechaCreacion
             };
 
             _dataContext.Usuarios.Add(newUser);
@@ -143,9 +144,9 @@ namespace TechnicalTest.Web.Controllers.API
             {
                 Usuario = u.Usuarioo,
                 Contraseña = u.Contraseña,
-                Estado = u.Estado ? "Activo" : "Inactivo",
+                Estado = u.Estado,
                 NombreUsuario = u.NombreUsuario,
-                FechaCreacion = u.FechaCreacion.ToString("dd/MM/yyyy HH:mm:ss")
+                FechaCreacion = u.FechaCreacion
             }).ToList());
 
             return Ok(response);
@@ -176,9 +177,9 @@ namespace TechnicalTest.Web.Controllers.API
                         {
                             Usuario = user.Usuarioo,
                             Contraseña = user.Contraseña,
-                            Estado = user.Estado ? "Activo" : "Inactivo",
+                            Estado = user.Estado,
                             NombreUsuario = user.NombreUsuario,
-                            FechaCreacion = user.FechaCreacion.ToString("dd/MM/yyyy HH:mm:ss")
+                            FechaCreacion = user.FechaCreacion
                         };
                     }
                     else
@@ -188,9 +189,10 @@ namespace TechnicalTest.Web.Controllers.API
                     finalMessage = $"El usuario : { request.Usuario }, no esta registrado.";
             }
 
-            return Ok(new Response<UserInformationResponse> { 
-                RealizadoCorrectamente = consultaCompletada, 
-                Mensaje = finalMessage, 
+            return Ok(new Response<UserInformationResponse>
+            {
+                RealizadoCorrectamente = consultaCompletada,
+                Mensaje = finalMessage,
                 Resultado = result
             });
         }
